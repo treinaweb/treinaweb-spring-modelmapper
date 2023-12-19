@@ -18,6 +18,7 @@
 		<webjar-locator.version>0.47</webjar-locator.version>
 		<webjar-adminlte.version>3.2.0</webjar-adminlte.version>
 		<webjar-crypto-js.version>4.1.1</webjar-crypto-js.version>
+		<modelmapper.version>3.0.0</modelmapper.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -71,6 +72,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>${modelmapper.version}</version>
 		</dependency>
 	</dependencies>
 
