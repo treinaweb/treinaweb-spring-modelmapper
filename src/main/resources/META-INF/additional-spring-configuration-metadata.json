@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "br.com.treinaweb.twprojects.mappers.provider",
+      "type": "br.com.treinaweb.twprojects.config.MapperProviders",
+      "description": "Implementação a ser utilizada para a camada mapper"
+    }
+  ]
+}
