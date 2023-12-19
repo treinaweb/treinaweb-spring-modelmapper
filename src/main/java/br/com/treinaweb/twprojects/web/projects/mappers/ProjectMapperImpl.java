@@ -1,5 +1,6 @@
 package br.com.treinaweb.twprojects.web.projects.mappers;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import br.com.treinaweb.twprojects.core.exceptions.ClientNotFoundException;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "br.com.treinaweb.twprojects.mappers.provider", havingValue = "local")
 public class ProjectMapperImpl implements ProjectMapper {
 
     private final ClientRepository clientRepository;

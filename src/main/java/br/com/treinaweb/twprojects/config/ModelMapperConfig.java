@@ -1,5 +1,8 @@
 package br.com.treinaweb.twprojects.config;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -8,12 +11,17 @@ import org.springframework.context.annotation.Configuration;
 import br.com.treinaweb.twprojects.core.models.Address;
 import br.com.treinaweb.twprojects.core.models.Client;
 import br.com.treinaweb.twprojects.core.models.Employee;
+import br.com.treinaweb.twprojects.core.models.Project;
 import br.com.treinaweb.twprojects.core.utils.StringUtils;
 import br.com.treinaweb.twprojects.web.clients.dtos.ClientForm;
 import br.com.treinaweb.twprojects.web.employees.dtos.AddressForm;
 import br.com.treinaweb.twprojects.web.employees.dtos.EmployeeDetails;
 import br.com.treinaweb.twprojects.web.employees.dtos.EmployeeForm;
 import br.com.treinaweb.twprojects.web.employees.dtos.EmployeeListItem;
+import br.com.treinaweb.twprojects.web.projects.dtos.ProjectDetails;
+import br.com.treinaweb.twprojects.web.projects.dtos.ProjectForm;
+import br.com.treinaweb.twprojects.web.projects.dtos.ProjectListItem;
+import br.com.treinaweb.twprojects.web.projects.dtos.ProjectTeamListItem;
 
 @Configuration
 public class ModelMapperConfig {
@@ -92,6 +100,53 @@ public class ModelMapperConfig {
                 .map(Employee::getAddress, EmployeeDetails::setAddress)
             );
 
+        modelMapper.createTypeMap(Project.class, ProjectListItem.class)
+            .addMappings(mapper -> mapper
+                .map(src -> src.getClient().getName(), ProjectListItem::setClient)
+            )
+            .addMappings(mapper -> mapper
+                .map(src -> src.getManager().getName(), ProjectListItem::setManager)
+            );
+
+        modelMapper.createTypeMap(ProjectForm.class, Project.class)
+            .addMappings(mapper -> mapper
+                .using(toClient())
+                .map(ProjectForm::getClient, Project::setClient)
+            )
+            .addMappings(mapper -> mapper
+                .using(toEmployee())
+                .map(ProjectForm::getManager, Project::setManager)
+            )
+            .addMappings(mapper -> mapper
+                .using(toEmployees())
+                .map(ProjectForm::getTeam, Project::setTeam)
+            );
+
+        modelMapper.createTypeMap(Project.class, ProjectForm.class)
+            .addMappings(mapper -> mapper
+                .map(src -> src.getClient().getId(), ProjectForm::setClient)
+            )
+            .addMappings(mapper -> mapper
+                .map(src -> src.getManager().getId(), ProjectForm::setManager)
+            )
+            .addMappings(mapper -> mapper
+                .using(toEmployeeIds())
+                .map(Project::getTeam, ProjectForm::setTeam)
+            );
+
+        modelMapper.createTypeMap(Project.class, ProjectDetails.class)
+            .addMappings(mapper -> mapper
+                .map(src -> src.getClient().getName(), ProjectDetails::setClient)
+            )
+            .addMappings(mapper -> mapper
+                .map(src -> src.getManager().getName(), ProjectDetails::setManager)
+            );
+
+        modelMapper.createTypeMap(Employee.class, ProjectTeamListItem.class)
+            .addMappings(mapper -> mapper
+                .map(src -> src.getPosition().getName(), ProjectTeamListItem::setPosition)
+            );
+
         return modelMapper;
     }
 
@@ -128,5 +183,31 @@ public class ModelMapperConfig {
             context.getSource().getCity(),
             context.getSource().getState()
         );
+    }
+
+    private Converter<Long, Client> toClient() {
+        return context -> Client.builder()
+            .id(context.getSource())
+            .build();
+    }
+
+    private Converter<Long, Employee> toEmployee() {
+        return context -> Employee.builder()
+            .id(context.getSource())
+            .build();
+    }
+
+    private Converter<List<Long>, List<Employee>> toEmployees() {
+        return context -> context.getSource()
+            .stream()
+            .map((id) -> Employee.builder().id(id).build())
+            .collect(Collectors.toList());
+    }
+
+    private Converter<List<Employee>, List<Long>> toEmployeeIds() {
+        return context -> context.getSource()
+            .stream()
+            .map(Employee::getId)
+            .toList();
     }
 }
