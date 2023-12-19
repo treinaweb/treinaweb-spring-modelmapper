@@ -1,5 +1,6 @@
 package br.com.treinaweb.twprojects.web.employees.mappers;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import br.com.treinaweb.twprojects.core.exceptions.PositionNotFoundException;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "br.com.treinaweb.twprojects.mappers.provider", havingValue = "local")
 public class EmployeeMapperImpl implements EmployeeMapper {
 
     private final AddressMapper addressMapper;
