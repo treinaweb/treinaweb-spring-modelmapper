@@ -1,5 +1,6 @@
 package br.com.treinaweb.twprojects.web.clients.mappers;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import br.com.treinaweb.twprojects.core.models.Client;
@@ -8,6 +9,7 @@ import br.com.treinaweb.twprojects.web.clients.dtos.ClientForm;
 import br.com.treinaweb.twprojects.web.clients.dtos.ClientListItem;
 
 @Component
+@ConditionalOnProperty(name = "br.com.treinaweb.twprojects.mappers.provider", havingValue = "local")
 public class ClientMapperImpl implements ClientMapper {
 
     @Override
